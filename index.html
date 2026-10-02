@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BacMotionAI — Bacterial Motility AI Dashboard</title>
+  <meta name="description"
+    content="Interactive AI-based analysis of bacterial motility under confinement and chemical stimuli. Explore the ML pipeline with live simulations.">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ═══════ HERO ═══════ -->
+  <section class="hero" id="hero">
+    <canvas class="hero-bg-canvas" id="heroBg"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge">🧬 AI-Powered Biophysics</div>
+      <h1>Bacterial Motility Under Confinement &amp; Chemical Stimuli</h1>
+      <p>Explore how E. coli navigate confined channels, respond to chemicals, and how ML classifies their behavior —
+        all in real-time.</p>
+      <a href="#pipeline" class="hero-cta">
+        Explore the Pipeline ↓
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════ PIPELINE FLOWCHART ═══════ -->
+  <section id="pipeline">
+    <div class="container">
+      <div class="section-header">
+        <h2>🔬 How the Backend Works</h2>
+        <p>From physics simulation to ML prediction — a 4-stage pipeline</p>
+      </div>
+
+      <div class="pipeline-flow">
+        <a class="pipeline-step active" href="#snap-sim" id="pipe-sim">
+          <div class="step-icon sim">🦠</div>
+          <div class="step-label">Physics Simulation</div>
+          <div class="step-sublabel">Run-and-tumble + walls</div>
+        </a>
+        <div class="pipeline-arrow">→</div>
+        <a class="pipeline-step" href="#snap-feat" id="pipe-feat">
+          <div class="step-icon feat">📊</div>
+          <div class="step-label">Feature Extraction</div>
+          <div class="step-sublabel">14 measured statistics</div>
+        </a>
+        <div class="pipeline-arrow">→</div>
+        <a class="pipeline-step" href="#snap-ml" id="pipe-ml">
+          <div class="step-icon ml">🤖</div>
+          <div class="step-label">ML Classification</div>
+          <div class="step-sublabel">4 trained models</div>
+        </a>
+        <div class="pipeline-arrow">→</div>
+        <a class="pipeline-step" href="#snap-regime" id="pipe-regime">
+          <div class="step-icon pred">🎯</div>
+          <div class="step-label">Regime Prediction</div>
+          <div class="step-sublabel">5 motility regimes</div>
+        </a>
+      </div>
+
+      <!-- Snapshot cards -->
+      <div class="snapshot-grid">
+
+        <!-- Card 1: Physics Simulation -->
+        <div class="snapshot-card" id="snap-sim">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(6,182,212,0.2))">
+              🦠</div>
+            <div>
+              <div class="card-title">Physics Simulation Engine</div>
+              <div class="card-subtitle">Realistic E. coli dynamics</div>
+            </div>
+          </div>
+          <div class="card-body">
+            Each bacterium moves via <strong>run-and-tumble</strong> motion with hydrodynamic wall interactions,
+            chemical modulation, and biological noise.
+          </div>
+          <div class="param-grid">
+            <div class="param-item"><span class="param-label">Speed v₀</span><span class="param-value">20 µm/s</span>
+            </div>
+            <div class="param-item"><span class="param-label">Rot. Diff Dᵣ</span><span class="param-value">0.2
+                rad²/s</span></div>
+            <div class="param-item"><span class="param-label">Torque κ</span><span class="param-value">6.0</span></div>
+            <div class="param-item"><span class="param-label">Cell Radius</span><span class="param-value">1.0 µm</span>
+            </div>
+            <div class="param-item"><span class="param-label">Time Step</span><span class="param-value">0.01 s</span>
+            </div>
+            <div class="param-item"><span class="param-label">Duration</span><span class="param-value">6.0 s</span>
+            </div>
+          </div>
+          <div class="equation-block">
+            θ(t+dt) = θ + ω·dt + drift·dt + √(2·Dᵣ·dt)·η<br>
+            ω = -κ·(a/h)²·sin(2θ) &nbsp;[hydro]<br>
+            v = v₀·v_scale·(1 + ε·a/h) &nbsp;[near wall]
+          </div>
+        </div>
+
+        <!-- Card 2: Feature Extraction -->
+        <div class="snapshot-card" id="snap-feat">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(34,197,94,0.2))">
+              📊</div>
+            <div>
+              <div class="card-title">Feature Extraction</div>
+              <div class="card-subtitle">14 measured statistics per bacterium</div>
+            </div>
+          </div>
+          <div class="card-body">
+            After simulation, each trajectory is distilled into <strong>14 experimentally-measurable features</strong> —
+            mimicking real microscopy tracking data.
+          </div>
+          <div class="feature-tags">
+            <span class="feature-tag">mean_speed</span>
+            <span class="feature-tag">std_speed</span>
+            <span class="feature-tag">q25_speed</span>
+            <span class="feature-tag">q75_speed</span>
+            <span class="feature-tag">mean_alignment</span>
+            <span class="feature-tag">std_alignment</span>
+            <span class="feature-tag">wall_rate</span>
+            <span class="feature-tag">near_wall_frac</span>
+            <span class="feature-tag">mean_run_len</span>
+            <span class="feature-tag">confinement_idx</span>
+            <span class="feature-tag">cv_speed</span>
+            <span class="feature-tag">eff_diffusivity</span>
+            <span class="feature-tag">speed_skewness</span>
+            <span class="feature-tag">speed_kurtosis</span>
+          </div>
+        </div>
+
+        <!-- Card 3: ML Models -->
+        <div class="snapshot-card" id="snap-ml">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(168,85,247,0.2))">
+              🤖</div>
+            <div>
+              <div class="card-title">ML Classification</div>
+              <div class="card-subtitle">4 models with anti-overfitting design</div>
+            </div>
+          </div>
+          <div class="card-body">
+            Models trained on <strong>2,000 samples</strong> with SMOTE balancing (train only), regularization, and
+            early stopping.
+          </div>
+          <table class="model-table">
+            <tr>
+              <th>Model</th>
+              <th>Test Acc</th>
+              <th>ROC-AUC</th>
+            </tr>
+            <tr>
+              <td>🌳 Random Forest</td>
+              <td style="color:#10b981">~0.78</td>
+              <td>~0.94</td>
+            </tr>
+            <tr>
+              <td>📈 Logistic Reg.</td>
+              <td style="color:#f59e0b">~0.62</td>
+              <td>~0.87</td>
+            </tr>
+            <tr>
+              <td>⚡ XGBoost</td>
+              <td style="color:#10b981">~0.76</td>
+              <td>~0.93</td>
+            </tr>
+            <tr>
+              <td>🧠 MLP</td>
+              <td style="color:#10b981">~0.74</td>
+              <td>~0.92</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Card 4: Regime Classification -->
+        <div class="snapshot-card" id="snap-regime">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(249,115,22,0.2),rgba(245,158,11,0.2))">
+              🎯</div>
+            <div>
+              <div class="card-title">Regime Prediction</div>
+              <div class="card-subtitle">5 emergent motility regimes</div>
+            </div>
+          </div>
+          <div class="card-body">
+            Regimes are classified from <strong>measured behavior</strong>, not input parameters — preventing data
+            leakage.
+          </div>
+          <div class="regime-list">
+            <div class="regime-chip" style="border-color:var(--regime-inhibited)">
+              <span class="regime-dot" style="background:var(--regime-inhibited)"></span>
+              <div>
+                <div class="regime-name">Inhibited</div>
+                <div class="regime-desc">Slow, erratic, short runs (antibiotic-like)</div>
+              </div>
+            </div>
+            <div class="regime-chip" style="border-color:var(--regime-wall)">
+              <span class="regime-dot" style="background:var(--regime-wall)"></span>
+              <div>
+                <div class="regime-name">Wall-Guided</div>
+                <div class="regime-desc">High wall accumulation + alignment</div>
+              </div>
+            </div>
+            <div class="regime-chip" style="border-color:var(--regime-chemo)">
+              <span class="regime-dot" style="background:var(--regime-chemo)"></span>
+              <div>
+                <div class="regime-name">Chemotactic</div>
+                <div class="regime-desc">Long runs, directed motion</div>
+              </div>
+            </div>
+            <div class="regime-chip" style="border-color:var(--regime-confined)">
+              <span class="regime-dot" style="background:var(--regime-confined)"></span>
+              <div>
+                <div class="regime-name">Confined</div>
+                <div class="regime-desc">Frequent wall collisions</div>
+              </div>
+            </div>
+            <div class="regime-chip" style="border-color:var(--regime-free)">
+              <span class="regime-dot" style="background:var(--regime-free)"></span>
+              <div>
+                <div class="regime-name">Free-Swimming</div>
+                <div class="regime-desc">Open exploration, moderate speed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ ANALYSIS CHARTS ═══════ -->
+  <section id="analysis">
+    <div class="container">
+      <div class="section-header">
+        <h2>📈 Pipeline Outputs & Analysis</h2>
+        <p>Key visualizations from the ML pipeline — speed distributions, model metrics, and overfitting diagnostics</p>
+      </div>
+
+      <!-- Row 1: Speed + Model Comparison -->
+      <div class="chart-row">
+        <div class="chart-card snapshot-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(76,175,80,0.2),rgba(244,67,54,0.2))">📊
+            </div>
+            <div>
+              <div class="card-title">Speed Distribution by Chemical</div>
+              <div class="card-subtitle">Obj 2 — How chemicals alter bacterial speed</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartSpeedDist"></canvas></div>
+        </div>
+        <div class="chart-card snapshot-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(139,92,246,0.2))">
+              🏆</div>
+            <div>
+              <div class="card-title">Model Comparison</div>
+              <div class="card-subtitle">Obj 3 — Test accuracy, ROC-AUC, log loss</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartModelComp"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 2: Feature Importance + Class Distribution -->
+      <div class="chart-row">
+        <div class="chart-card snapshot-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(59,130,246,0.2))">
+              🌳</div>
+            <div>
+              <div class="card-title">Feature Importances (Random Forest)</div>
+              <div class="card-subtitle">Which features matter most for classification</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartFeatImp"></canvas></div>
+        </div>
+        <div class="chart-card snapshot-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(249,115,22,0.2),rgba(168,85,247,0.2))">
+              🎯</div>
+            <div>
+              <div class="card-title">Regime Class Distribution</div>
+              <div class="card-subtitle">Dataset balance before SMOTE</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartClassDist"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 3: Learning Curves + Confusion Matrix -->
+      <div class="chart-row">
+        <div class="chart-card snapshot-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(245,158,11,0.2))">
+              📉</div>
+            <div>
+              <div class="card-title">Learning Curves</div>
+              <div class="card-subtitle">Bias-variance tradeoff — train vs validation accuracy</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartLearning"></canvas></div>
+        </div>
+        <div class="chart-card snapshot-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(96,125,139,0.2))">
+              🔢</div>
+            <div>
+              <div class="card-title">Confusion Matrix (Best Model)</div>
+              <div class="card-subtitle">Random Forest predictions on clean test set</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartConfusion"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 4: ROC Curves + Overfitting Summary -->
+      <div class="chart-row">
+        <div class="chart-card snapshot-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(244,67,54,0.2))">
+              📈</div>
+            <div>
+              <div class="card-title">ROC Curves (One-vs-Rest)</div>
+              <div class="card-subtitle">Per-regime discrimination ability</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartROC"></canvas></div>
+        </div>
+        <div class="chart-card snapshot-card">
+          <div class="card-header">
+            <div class="card-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(244,67,54,0.2))">✅
+            </div>
+            <div>
+              <div class="card-title">Overfitting Check</div>
+              <div class="card-subtitle">CV Accuracy vs Test Accuracy gap</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartOverfit"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ INTERACTIVE SIMULATOR ═══════ -->
+  <section id="simulator">
+    <div class="container">
+      <div class="section-header">
+        <h2>🎮 Interactive Simulator</h2>
+        <p>Adjust parameters and watch bacteria react in real-time</p>
+      </div>
+
+      <div class="sim-layout">
+        <!-- Controls -->
+        <div class="controls-panel">
+          <h3>⚙️ Simulation Controls</h3>
+
+          <div class="control-group">
+            <div class="control-label">
+              Channel Width
+              <span class="control-value" id="widthVal">20 µm</span>
+            </div>
+            <input type="range" id="widthSlider" min="5" max="100" step="5" value="20">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">Number of Bacteria
+              <span class="control-value" id="numBactVal">8</span>
+            </div>
+            <input type="range" id="numBactSlider" min="1" max="25" step="1" value="8">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">Environment</div>
+            <div class="toggle-group">
+              <button class="toggle-btn active" data-hydro="false" id="btn-dry">🌵 Dry</button>
+              <button class="toggle-btn" data-hydro="true" id="btn-wet">💧 Wet</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">Chemical Stimulus</div>
+            <div class="chem-selector">
+              <button class="chem-btn active" data-chem="none">⬜ None</button>
+              <button class="chem-btn" data-chem="attractant">🟢 Attractant</button>
+              <button class="chem-btn" data-chem="repellent">🔴 Repellent</button>
+              <button class="chem-btn" data-chem="antibiotic">🟣 Antibiotic</button>
+            </div>
+          </div>
+
+          <button class="run-btn" id="runBtn">
+            ▶ Run Simulation
+          </button>
+
+          <div class="speed-stats" id="speedStats" style="display:none">
+            <div class="speed-stat">
+              <div class="speed-stat-val" id="statSpeed">—</div>
+              <div class="speed-stat-label">Mean Speed</div>
+            </div>
+            <div class="speed-stat">
+              <div class="speed-stat-val" id="statAlign">—</div>
+              <div class="speed-stat-label">Alignment</div>
+            </div>
+            <div class="speed-stat">
+              <div class="speed-stat-val" id="statWall">—</div>
+              <div class="speed-stat-label">Wall Frac</div>
+            </div>
+            <div class="speed-stat">
+              <div class="speed-stat-val" id="statRunLen">—</div>
+              <div class="speed-stat-label">Run Length</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main sim area -->
+        <div class="sim-main">
+          <div class="canvas-container">
+            <div class="canvas-header">
+              <div class="canvas-title">🔬 Live Bacterial Trajectories</div>
+              <div class="canvas-status idle" id="canvasStatus">Idle</div>
+            </div>
+            <canvas id="simCanvas" width="900" height="400"></canvas>
+          </div>
+
+          <div class="results-grid">
+            <!-- Features -->
+            <div class="result-card" id="featureCard">
+              <h4>📊 Extracted Features</h4>
+              <div id="featureContent">
+                <div class="placeholder-msg">
+                  <div class="icon">📊</div>
+                  <div class="text">Run a simulation to see extracted features</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prediction -->
+            <div class="result-card" id="predCard">
+              <h4>🎯 ML Regime Prediction</h4>
+              <div id="predContent">
+                <div class="placeholder-msg">
+                  <div class="icon">🤖</div>
+                  <div class="text">Run a simulation to see the ML prediction</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Simulation Charts -->
+          <div class="live-charts-header">
+            <h3>📈 Live Simulation Plots</h3>
+            <p>These charts update after each simulation run</p>
+          </div>
+          <div class="live-charts-grid">
+            <div class="live-chart-card snapshot-card">
+              <h4>🗺️ Trajectory Map (X vs Y)</h4>
+              <div class="chart-wrap"><canvas id="liveTrajectory"></canvas></div>
+            </div>
+            <div class="live-chart-card snapshot-card">
+              <h4>📊 Speed Distribution</h4>
+              <div class="chart-wrap"><canvas id="liveSpeedHist"></canvas></div>
+            </div>
+            <div class="live-chart-card snapshot-card">
+              <h4>📏 Y-Position Density</h4>
+              <div class="chart-wrap"><canvas id="liveYDensity"></canvas></div>
+            </div>
+            <div class="live-chart-card snapshot-card">
+              <h4>🎯 Regime Prediction Radar</h4>
+              <div class="chart-wrap"><canvas id="liveRadar"></canvas></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    🦠 BacMotionAI v2 — Anti-Overfitting Design &nbsp;|&nbsp; Interactive Dashboard
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
