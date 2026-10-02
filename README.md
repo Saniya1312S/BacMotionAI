@@ -344,7 +344,7 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 **🦠 BacMotionAI v2 — Anti-Overfitting Design | Interactive Dashboard**
 
-Made with ❤️ for computational biophysics
+
 
 [⬆ Back to Top](#-bacmotionai)
 
